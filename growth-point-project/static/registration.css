@@ -1,0 +1,472 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: #0a1a2d;
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+    background-size: cover;
+    background-position: center;
+    background-blend-mode: overlay;
+    background-color: rgba(10, 26, 45, 0.85);
+    position: relative;
+    overflow-x: hidden;
+}
+
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(10, 26, 45, 0.9) 0%, rgba(25, 65, 120, 0.7) 100%);
+    z-index: 0;
+}
+
+.container {
+    display: flex;
+    width: 90%;
+    max-width: 1200px;
+    min-height: 700px;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+    position: relative;
+    z-index: 1;
+    margin: 20px;
+    transition: all 0.7s ease;
+}
+
+.hero-section {
+    flex: 1;
+    background: linear-gradient(rgba(0, 60, 120, 0.7), rgba(0, 40, 80, 0.8)), url('https://images.unsplash.com/photo-1488646953014-85cb44e25828?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1035&q=80');
+    background-size: cover;
+    background-position: center;
+    padding: 50px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.7s ease;
+    position: relative;
+}
+
+.form-section {
+    flex: 1;
+    background-color: rgba(255, 255, 255, 0.95);
+    color: #333;
+    padding: 50px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition: all 0.7s ease;
+    position: relative;
+}
+
+/* Стили для режима входа (перевернутый контейнер) */
+.container.login-mode {
+    flex-direction: row-reverse;
+}
+
+/* Контент для режима регистрации */
+.hero-content {
+    transition: all 0.5s ease;
+    opacity: 1;
+}
+
+.hero-content.login-content {
+    opacity: 0;
+    position: absolute;
+    top: 50px;
+    left: 40px;
+    right: 40px;
+    pointer-events: none;
+}
+
+/* Контент для режима входа */
+.login-hero-content {
+    opacity: 0;
+    position: absolute;
+    top: 50px;
+    left: 40px;
+    right: 40px;
+    transition: all 0.5s ease;
+    pointer-events: none;
+}
+
+.login-hero-content.active {
+    opacity: 1;
+    position: relative;
+    top: 0;
+    left: 0;
+    pointer-events: all;
+}
+
+.logo {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2.2rem;
+    font-weight: 900;
+    letter-spacing: 2px;
+    color: #fff;
+    margin-bottom: 30px;
+}
+
+.logo span {
+    color: #4dc2f7;
+}
+
+.hero-content h1 {
+    font-size: 2.8rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    background: linear-gradient(to right, #4dc2f7, #a1e6ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.login-hero-content h1 {
+    font-size: 2.8rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    background: linear-gradient(to right, #4dc2f7, #a1e6ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.hero-content p, .login-hero-content p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 25px;
+    opacity: 0.9;
+}
+
+.features {
+    margin-top: 40px;
+}
+
+.feature {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.feature i {
+    font-size: 1.5rem;
+    color: #4dc2f7;
+    margin-right: 15px;
+}
+
+.buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.btn-hero {
+    padding: 12px 25px;
+    border-radius: 30px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid #4dc2f7;
+    font-size: 0.95rem;
+}
+
+.btn-explore {
+    background-color: #4dc2f7;
+    color: #0a1a2d;
+}
+
+.btn-explore:hover {
+    background-color: #3aa8e0;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(77, 194, 247, 0.3);
+}
+
+.btn-read {
+    background-color: transparent;
+    color: #fff;
+}
+
+.btn-read:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: translateY(-3px);
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.form-header h2 {
+    font-size: 2.2rem;
+    color: #0a1a2d;
+    margin-bottom: 10px;
+}
+
+.form-header p {
+    color: #666;
+    font-size: 1rem;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #444;
+}
+
+.input-with-icon {
+    position: relative;
+}
+
+.input-with-icon i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #777;
+}
+
+.form-control {
+    width: 100%;
+    padding: 15px 15px 15px 45px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #4dc2f7;
+    box-shadow: 0 0 0 3px rgba(77, 194, 247, 0.2);
+    outline: none;
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.checkbox-group input {
+    margin-right: 10px;
+    transform: scale(1.2);
+}
+
+.checkbox-group label {
+    color: #555;
+    font-size: 0.9rem;
+}
+
+.btn-create, .btn-login {
+    width: 100%;
+    padding: 16px;
+    background-color: #0a1a2d;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 20px;
+}
+
+.btn-create:hover, .btn-login:hover {
+    background-color: #4dc2f7;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(10, 26, 45, 0.3);
+}
+
+.login-link, .register-link {
+    text-align: center;
+    margin-top: 20px;
+    color: #666;
+    font-size: 0.95rem;
+}
+
+.login-link a, .register-link a {
+    color: #4dc2f7;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.login-link a:hover, .register-link a:hover {
+    text-decoration: underline;
+}
+
+.floating-elements {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.floating-element {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background-color: rgba(77, 194, 247, 0.2);
+    border-radius: 50%;
+    animation: float 6s ease-in-out infinite;
+}
+
+.floating-element:nth-child(1) {
+    top: 10%;
+    left: 5%;
+    animation-delay: 0s;
+}
+
+.floating-element:nth-child(2) {
+    top: 20%;
+    right: 10%;
+    width: 30px;
+    height: 30px;
+    animation-delay: 1s;
+}
+
+.floating-element:nth-child(3) {
+    bottom: 15%;
+    left: 15%;
+    width: 25px;
+    height: 25px;
+    animation-delay: 2s;
+}
+
+.floating-element:nth-child(4) {
+    bottom: 25%;
+    right: 5%;
+    animation-delay: 3s;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-20px) rotate(180deg);
+    }
+}
+
+/* Анимация появления */
+.fade-in {
+    animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.success-message, .login-success-message {
+    display: none;
+    background-color: #d4edda;
+    color: #155724;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 20px;
+    text-align: center;
+    border: 1px solid #c3e6cb;
+}
+
+.error-message {
+    color: #dc3545;
+    font-size: 0.85rem;
+    margin-top: 5px;
+    display: none;
+}
+
+/* Анимация переключения */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.slide-in {
+    animation: slideIn 0.5s ease-out;
+}
+
+.alertError{
+    color:rgb(120, 18, 28);
+}
+
+/* Добавьте эти стили в ваш CSS файл */
+/* Обновленные стили для размещения иконки внутри поля ввода */
+.password-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-with-icon {
+    position: relative;
+    width: 100%;
+}
+
+.input-with-icon .toggle-password {
+    position: absolute;
+    right: 15px; /* Уменьшил отступ от правого края */
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #888;
+    z-index: 3; /* Увеличил z-index чтобы иконка была поверх всех элементов */
+    background: transparent;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+}
+
+.input-with-icon .toggle-password:hover {
+    color: #333;
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: 50%;
+}
+
+.input-with-icon .form-control {
+    padding-right: 45px !important; /* Убедитесь что есть достаточно места справа */
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Стиль для иконки внутри поля */
+.input-with-icon .fas {
+    font-size: 16px;
+    line-height: 1;
+}
+

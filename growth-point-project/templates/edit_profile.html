@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактирование профиля | GrowthPoint</title>
+    <link rel="stylesheet" href="/static/profile.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{url_for('static', filename='edit_profile.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='main.css')}}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Навигация -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="/main" class="logo">Growth<span>Point</span></a>
+            </div>
+            <div class="nav-links">
+                <a href="/main" class="nav-link">Главная</a>
+                <a href="/main#events" class="nav-link">Мероприятия</a>
+                <a href="/main#communities" class="nav-link">Сообщества</a>
+                <a href="/profile" class="nav-link">Профиль</a>
+                <a href="/edit_profile" class="nav-link active">Редактировать</a>
+            </div>
+            <div class="nav-actions">
+                <a href="{{url_for('profile_page')}}" class="btn-login-nav">
+                    <i class="fas fa-user"></i> {{username}}
+                </a>
+            </div>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+
+    <section class="breadcrumbs">
+        <div class="container">
+            <div class="breadcrumb-container">
+                <a href="/main" class="breadcrumb-link">
+                    <i class="fas fa-home"></i>
+                    Главная
+                </a>
+                <span class="breadcrumb-separator">/</span>
+                <a href="/profile" class="breadcrumb-link">Профиль</a>
+                <span class="breadcrumb-separator">/</span>
+                <span class="breadcrumb-current">Редактирование</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Основное содержимое -->
+    <main class="edit-profile-section">
+        <div class="container">
+            <div class="edit-profile-header">
+                <h1 class="edit-profile-title">
+                    <i class="fas fa-user-edit"></i>
+                    Редактирование профиля
+                </h1>
+                <p class="edit-profile-subtitle">
+                    Обновите информацию о себе, чтобы другие участники могли лучше вас узнать
+                </p>
+            </div>
+
+            <div class="edit-profile-form">
+                <form action="{{ url_for('edit_profile') }}" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="edit_form">
+                    <section class="form-section">
+                        <h2 class="section-title">Основная информация</h2>
+                        <div class="form-grid">
+                            <!-- Имя пользователя -->
+                            <div class="form-group">
+                                <label for="name" class="form-label">
+                                    <i class="fas fa-user"></i>
+                                    Имя пользователя
+                                </label>
+                                <input type="text"
+                                       id="name"
+                                       name="name"
+                                       class="form-input"
+                                       value="{{ username if username else '' }}"
+                                       required
+                                       minlength="2"
+                                       maxlength="50"
+                                       pattern="[A-Za-zА-Яа-яЁё0-9\s\-_]+"
+                                       title="Только буквы, цифры, пробелы, дефисы и подчеркивания">
+                                <div class="form-hint">От 2 до 50 символов. Только буквы, цифры, пробелы, дефисы и подчеркивания</div>
+                                <div class="error-message" id="name-error" style="display: none; color: #ff6b6b; font-size: 0.85rem; margin-top: 5px;"></div>
+                            </div>
+
+                            <!-- Электронная почта -->
+                            <div class="form-group">
+                                <label for="email" class="form-label">
+                                    <i class="fas fa-envelope"></i>
+                                    Электронная почта
+                                </label>
+                                <input type="email"
+                                       id="email"
+                                       name="email"
+                                       class="form-input"
+                                       value="{{ user_email if user_email else '' }}"
+                                       required
+                                       title="Введите корректный email адрес">
+                                <div class="form-hint">На эту почту будут приходить уведомления</div>
+                                <div class="error-message" id="email-error" style="display: none; color: #ff6b6b; font-size: 0.85rem; margin-top: 5px;"></div>
+                            </div>
+
+                            <!-- Телефон -->
+                            <div class="form-group">
+                                <label for="phone" class="form-label">
+                                    <i class="fas fa-phone"></i>
+                                    Телефон
+                                </label>
+                                <input type="tel"
+                                       id="phone"
+                                       name="phone"
+                                       class="form-input"
+                                       value="{{ user_phone if user_phone else '' }}"
+                                       placeholder="+7 (___) ___-__-__"
+                                       pattern="\+7\s\(\d{3}\)\s\d{3}-\d{2}-\d{2}"
+                                       title="Формат: +7 (999) 123-45-67">
+                                <div class="form-hint">Формат: +7 (999) 123-45-67. Необязательно</div>
+                                <div class="error-message" id="phone-error" style="display: none; color: #ff6b6b; font-size: 0.85rem; margin-top: 5px;"></div>
+                            </div>
+
+                            <!-- Город -->
+                            <div class="form-group">
+                                <label for="city" class="form-label">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    Город
+                                </label>
+                                <input type="text"
+                                       id="city"
+                                       name="city"
+                                       class="form-input"
+                                       value="{{ user_city if user_city else '' }}"
+                                       placeholder="Ваш город"
+                                       maxlength="100"
+                                       pattern="[A-Za-zА-Яа-яЁё\s\-]+"
+                                       title="Только буквы, пробелы и дефисы">
+                                <div class="form-hint">До 100 символов. Только буквы, пробелы и дефисы</div>
+                                <div class="error-message" id="city-error" style="display: none; color: #ff6b6b; font-size: 0.85rem; margin-top: 5px;"></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-save">
+                            <i class="fas fa-save"></i>
+                            Сохранить изменения
+                        </button>
+
+                        <a href="/profile" class="btn-cancel-form">
+                            <i class="fas fa-times"></i>
+                            Отмена
+                        </a>
+
+                        <button type="button" class="btn-delete-account" onclick="showDeleteConfirm()">
+                            <i class="fas fa-trash"></i>
+                            Удалить аккаунт
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Футер -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <div class="logo">Growth<span>Point</span></div>
+                    <p>Платформа для профессионального роста и развития через участие в мероприятиях.</p>
+                </div>
+                <div class="footer-links">
+                    <h3>Быстрые ссылки</h3>
+                    <ul>
+                        <li><a href="/main#about"><i class="fas fa-chevron-right"></i> О платформе</a></li>
+                        <li><a href="/main#events"><i class="fas fa-chevron-right"></i> Мероприятия</a></li>
+                        <li><a href="/main#communities"><i class="fas fa-chevron-right"></i> Сообщества</a></li>
+                        <li><a href="/main#blog"><i class="fas fa-chevron-right"></i> Блог</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h3>Контакты</h3>
+                    <ul>
+                        <li><i class="fas fa-envelope"></i> support@growthpoint.ru</li>
+                        <li><i class="fas fa-phone"></i> +7 (800) 123-45-67</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Москва, ул. Примерная, д. 1</li>
+                    </ul>
+                </div>
+                <div class="footer-newsletter">
+                    <h3>Новости</h3>
+                    <p>Подпишитесь на рассылку о новых мероприятиях</p>
+                    <div class="newsletter-form">
+                        <input type="email" class="newsletter-input" placeholder="Ваш email">
+                        <button class="btn-newsletter">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 GrowthPoint. Все права защищены.</p>
+                <div class="footer-bottom-links">
+                    <a href="/main#privacy">Политика конфиденциальности</a>
+                    <a href="/main#terms">Пользовательское соглашение</a>
+                    <a href="/main#rules">Правила использования</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+<script src="{{url_for('static', filename='edit_profile.js')}}">
+</body>
+</html>

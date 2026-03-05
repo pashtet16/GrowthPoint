@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Growth Point - Детали мероприятия</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{url_for('static', filename='eventCard.css')}}">
+</head>
+<body>
+    <!-- Навигация -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <div class="logo">Growth<span>Point</span></div>
+            </div>
+            <div class="nav-links">
+                <a href="/main" class="nav-link">Главная</a>
+                <a href="#" class="nav-link">О нас</a>
+            </div>
+            <div class="nav-actions">
+                <a href="{{url_for('profile_page') if user_status else url_for('registration_page')}}" class="btn-login-nav">
+                    <i class="fas fa-user"></i> {% if user_status %} {{username}} {% else %} Sign in {% endif %}
+                </a>
+            </div>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Хлебные крошки -->
+    <div class="breadcrumbs">
+        <div class="container">
+            <div class="breadcrumb-container">
+                <a href="/main" class="breadcrumb-link">
+                    <i class="fas fa-home"></i>
+                    Главная
+                </a>
+                <span class="breadcrumb-separator">/</span>
+                <a href="#events" class="breadcrumb-link">
+                    Мероприятия
+                </a>
+                <span class="breadcrumb-separator">/</span>
+                <span class="breadcrumb-current">{{event_name}}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Основное содержимое -->
+     <section class="event-detail-section">
+        <div class="container">
+            <div class="event-detail-container">
+                <!-- Основной контент мероприятия -->
+                <div class="event-main-content animate-fade-in">
+                    <!-- Картинка мероприятия с заголовком и датой/временем -->
+                    <div class="event-hero-image">
+                        <img src="{{event_img}}" alt="{{event_name}}">
+                        <div class="event-hero-badge">{{event_category}}</div>
+                        <div class="event-hero-overlay">
+                            <h1 class="event-hero-title">{{event_name}}</h1>
+
+                            <!-- Дата и время на картинке -->
+                            <div class="event-hero-meta">
+                                <div class="event-hero-meta-item">
+                                    <i class="far fa-calendar"></i>
+                                    <span>{{event_date[:10]}}</span>
+                                </div>
+                                <div class="event-hero-meta-item">
+                                    <i class="far fa-clock"></i>
+                                    <span>{{event_date[11:]}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Место проведения отдельно внизу -->
+                    <div class="event-location-info">
+                        <div class="location-container">
+                            <div class="location-item">
+                                <div class="location-icon">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <div class="location-content">
+                                    <span class="location-label">Место проведения</span>
+                                    <span class="location-value">{{event_place}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Остальной контент мероприятия -->
+                    <div class="event-content-details">
+                        <div class="event-description-section">
+                            <h2 class="section-title">О мероприятии</h2>
+                            <div class="event-description-text">
+                                <p>{{event_describe}}</p>
+                                <br>
+                                <h2 style="background: linear-gradient(
+                                            to right,
+                                            rgba(77, 194, 247, 0.9) 0%,
+                                            rgba(58, 168, 224, 0.8) 50%,
+                                            rgba(100, 220, 255, 0.7) 100%
+                                        );
+                                        -webkit-background-clip: text;
+                                        background-clip: text;
+                                        color: transparent;">
+                                    Длительность: <b>{{event_duration}}</b>
+                                </h2>
+                            </div>
+                        </div>
+
+                        <div class="event-details-grid">
+                            <div class="detail-card">
+                                <div class="detail-card-title">
+                                    <i class="fas fa-user-friends"></i>
+                                    <span>Для кого</span>
+                                </div>
+                                <div class="detail-card-content">
+                                    Для всех, кто хочет активного отдыха на природе. Подходит для начинающих. Минимальный возраст - 16 лет.
+                                </div>
+                            </div>
+
+                            <div class="detail-card">
+                                <div class="detail-card-title">
+                                    <i class="fas fa-hiking"></i>
+                                    <span>Сложность</span>
+                                </div>
+                                <div class="detail-card-content">
+                                    Средняя сложность. Требуется базовая физическая подготовка. Протяженность маршрута - 18 км.
+                                </div>
+                            </div>
+
+                            <div class="detail-card">
+                                <div class="detail-card-title">
+                                    <i class="fas fa-utensils"></i>
+                                    <span>Питание</span>
+                                </div>
+                                <div class="detail-card-content">
+                                    Полноценное трехразовое питание включено в стоимость. Возможность учесть диетические предпочтения.
+                                </div>
+                            </div>
+
+                            <div class="detail-card">
+                                <div class="detail-card-title">
+                                    <i class="fas fa-shield-alt"></i>
+                                    <span>Безопасность</span>
+                                </div>
+                                <div class="detail-card-content">
+                                    Все инструкторы имеют сертификаты спасателей. Страхование включено. Медицинское сопровождение.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="event-organizer">
+                            <div class="organizer-header">
+                                <div class="organizer-avatar">
+                                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" alt="Алексей Горный">
+                                </div>
+                                <div class="organizer-info">
+                                    <h4>Алексей Горный</h4>
+                                    <p>Организатор, сертифицированный горный гид с 10-летним опытом</p>
+                                    <p>Провел более 200 успешных походов</p>
+                                </div>
+                            </div>
+                            <div class="organizer-contact">
+                                <a href="#" class="organizer-contact-btn">
+                                    <i class="fab fa-telegram"></i>
+                                    Написать в Telegram
+                                </a>
+                                <a href="#" class="organizer-contact-btn">
+                                    <i class="fas fa-phone"></i>
+                                    Позвонить
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Боковая панель (должна быть справа) -->
+                <div class="event-sidebar animate-fade-in" style="animation-delay: 0.2s;">
+                    <div class="sidebar-card">
+                        <div class="price-section">
+                            <span class="price-label">Стоимость участия</span>
+                            <div class="price-amount">{{event_cost}} <span class="price-currency">₽</span></div>
+                        </div>
+
+                        <div class="event-stats">
+                            <div class="stat-item">
+                                <span class="stat-number">{{event_amount}}</span>
+                                <span class="stat-label">Количество мест</span>
+                            </div>
+                        </div>
+
+                        <button class="btn-register">
+                            <i class="fas fa-user-plus"></i>
+                            Присоединиться к мероприятию
+                        </button>
+
+                        <form action="" method="POST">
+                            <button class="btn-secondary" name="saved_event_button">
+                                {% if saved %}
+                                    <i class="fas fa-heart"></i>
+                                    В избранном
+                                {% else %}
+                                    <i class="far fa-heart"></i>
+                                    Добавить в избранное
+                                {% endif %}
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="sidebar-card">
+                        <h4 style="font-size: 1.2rem; color: var(--secondary); margin-bottom: 15px; font-weight: 600;">Поделиться</h4>
+                        <div class="share-buttons">
+                            <button class="share-btn telegram">
+                                <i class="fab fa-telegram-plane"></i>
+                                Telegram
+                            </button>
+                            <button class="share-btn link" onclick="copyLink()">
+                                <i class="fas fa-link"></i>
+                                Ссылка
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-card">
+                        <h4 style="font-size: 1.2rem; color: var(--secondary); margin-bottom: 15px; font-weight: 600;">Контакты организатора</h4>
+                        <div style="color: #666; line-height: 1.6;">
+                            <p style="margin-bottom: 10px;"><i class="fas fa-phone" style="color: var(--primary); margin-right: 10px;"></i> +7 999 123-45-67</p>
+                            <p style="margin-bottom: 10px;"><i class="fas fa-envelope" style="color: var(--primary); margin-right: 10px;"></i> alex@mountainguide.ru</p>
+                            <p><i class="fas fa-globe" style="color: var(--primary); margin-right: 10px;"></i> mountainguide.ru</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Похожие мероприятия -->
+    <section class="similar-events">
+        <div class="container">
+            <div class="similar-header">
+                <h2>Похожие мероприятия</h2>
+                <a href="/main" class="btn-view-all">
+                    <span>Все мероприятия</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="events-grid">
+                <!-- Карточка 1 -->
+                <div class="event-card animate-fade-in">
+                    <div class="event-card-image">
+                        <img src="{{event_similar_1[9]}}" alt="{{event_similar_1[1]}}">
+                        <div class="event-card-badge">{{event_similar_1[2]}}</div>
+                        <div class="event-card-overlay"></div>
+                    </div>
+                    <div class="event-card-content">
+                        <h3 class="event-card-title">{{event_similar_1[1]}}</h3>
+
+                        <div class="event-card-meta">
+                            <div class="meta-item">
+                                <i class="far fa-calendar"></i>
+                                <span>{{event_similar_1[4][:10]}}</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="far fa-clock"></i>
+                                <span>{{event_similar_1[4][11:]}}</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>{{event_similar_1[5]}}</span>
+                            </div>
+                        </div>
+
+                        <p class="event-card-description">
+                            {{event_similar_1[3][:120]}}{% if event_similar_1[3]|length > 120 %}...{% endif %}
+                        </p>
+
+                        <div class="event-card-footer">
+                            <div class="event-card-price">
+                                {{event_similar_1[7]}} <span class="currency">₽</span>
+                            </div>
+                            <form method="POST" action="" style="display: inline;">
+                                <input type="hidden" name="event_card_id_similar" value="{{event_similar_1[0]}}">
+                                <button type="submit" class="btn-join-small">
+                                    <i class="fas fa-user-plus"></i>
+                                    Присоединиться
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Карточка 2 -->
+                <div class="event-card animate-fade-in" style="animation-delay: 0.1s;">
+                    <div class="event-card-image">
+                        <img src="{{event_similar_2[9]}}" alt="{{event_similar_2[1]}}">
+                        <div class="event-card-badge">{{event_similar_2[2]}}</div>
+                        <div class="event-card-overlay"></div>
+                    </div>
+                    <div class="event-card-content">
+                        <h3 class="event-card-title">{{event_similar_2[1]}}</h3>
+
+                        <div class="event-card-meta">
+                            <div class="meta-item">
+                                <i class="far fa-calendar"></i>
+                                <span>{{event_similar_2[4][:10]}}</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="far fa-clock"></i>
+                                <span>{{event_similar_2[4][11:]}}</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>{{event_similar_2[5]}}</span>
+                            </div>
+                        </div>
+
+                        <p class="event-card-description">
+                            {{event_similar_2[3][:120]}}{% if event_similar_2[3]|length > 120 %}...{% endif %}
+                        </p>
+
+                        <div class="event-card-footer">
+                            <div class="event-card-price">
+                                {{event_similar_2[7]}} <span class="currency">₽</span>
+                            </div>
+                            <form method="POST" action="" style="display: inline;">
+                                <input type="hidden" name="event_card_id_similar" value="{{event_similar_2[0]}}">
+                                <button type="submit" class="btn-join-small">
+                                    <i class="fas fa-user-plus"></i>
+                                    Присоединиться
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Карточка 3 -->
+                <div class="event-card animate-fade-in" style="animation-delay: 0.2s;">
+                    <div class="event-card-image">
+                        <img src="{{event_similar_3[9]}}" alt="{{event_similar_3[1]}}">
+                        <div class="event-card-badge">{{event_similar_3[2]}}</div>
+                        <div class="event-card-overlay"></div>
+                    </div>
+                    <div class="event-card-content">
+                        <h3 class="event-card-title">{{event_similar_3[1]}}</h3>
+
+                        <div class="event-card-meta">
+                            <div class="meta-item">
+                                <i class="far fa-calendar"></i>
+                                <span>{{event_similar_3[4][:10]}}</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="far fa-clock"></i>
+                                <span>{{event_similar_3[4][11:]}}</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>{{event_similar_3[5]}}</span>
+                            </div>
+                        </div>
+
+                        <p class="event-card-description">
+                            {{event_similar_3[3][:120]}}{% if event_similar_3[3]|length > 120 %}...{% endif %}
+                        </p>
+
+                        <div class="event-card-footer">
+                            <div class="event-card-price">
+                                {{event_similar_3[7]}} <span class="currency">₽</span>
+                            </div>
+                            <form method="POST" action="" style="display: inline;">
+                                <input type="hidden" name="event_card_id_similar" value="{{event_similar_3[0]}}">
+                                <button type="submit" class="btn-join-small">
+                                    <i class="fas fa-user-plus"></i>
+                                    Присоединиться
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Футер -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <div class="logo">Growth<span>Point</span></div>
+                    <p>Выбирай активность и вперед к приключениям!</p>
+                    <div class="social-links">
+                        <a href="https://t.me/GrowthPointSupport_bot" class="telegram-link" target="_blank">
+                            <i class="fab fa-telegram-plane telegram-icon"></i>
+                            <span class="telegram-text">Наш Telegram</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h3>Быстрые ссылки</h3>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-calendar-alt"></i> Мероприятия</a></li>
+                        <li><a href="#"><i class="fas fa-users"></i> О нас</a></li>
+                        <li><a href="#"><i class="fas fa-question-circle"></i> FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h3>Контакты</h3>
+                    <ul>
+                        <li><i class="fas fa-envelope"></i> Point_information@mail.ru</li>
+                        <li><i class="fas fa-phone"></i> +7 989-528-58-22</li>
+                        <li><i class="fas fa-map-marker-alt"></i> г. Москва, ул. Тверская д. 13</li>
+                    </ul>
+                </div>
+                <div class="footer-newsletter">
+                    <h3>Будь в курсе</h3>
+                    <p>Подпишитесь на рассылку новостей о мероприятиях</p>
+                    <div class="newsletter-form">
+                        <input type="email" class="newsletter-input" placeholder="Ваш email">
+                        <button class="btn-newsletter">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Growth Point. Все права защищены.</p>
+                <div class="footer-bottom-links">
+                    <a href="#">Политика конфиденциальности</a>
+                    <a href="#">Условия использования</a>
+                    <a href="#">Карта сайта</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

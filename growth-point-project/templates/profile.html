@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль пользователя | GrowthPoint</title>
+    <link rel="stylesheet" href="/static/profile.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{url_for('static', filename='main.css')}}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Навигация -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="/main" class="logo">Growth<span>Point</span></a>
+            </div>
+            <div class="nav-links">
+                <a href="/main" class="nav-link">Главная</a>
+                <a href="/main#events" class="nav-link">Мероприятия</a>
+                <a href="/main#communities" class="nav-link">Сообщества</a>
+                <a href="/profile" class="nav-link active">Профиль</a>
+                <a href="/main#help" class="nav-link">Помощь</a>
+            </div>
+            <div class="nav-actions">
+                <form action="{{ url_for('profile_page') }}" method="post">
+                    <button name="exit_button" class="btn-login-nav" id="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i>
+                            Выйти
+                    </button>
+                </form>
+            </div>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Хлебные крошки -->
+    <section class="breadcrumbs">
+        <div class="container">
+            <div class="breadcrumb-container">
+                <a href="/main" class="breadcrumb-link">
+                    <i class="fas fa-home"></i>
+                    Главная
+                </a>
+                <span class="breadcrumb-separator">/</span>
+                <span class="breadcrumb-current">Мой профиль</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Основное содержимое профиля -->
+    <main class="profile-section">
+        <div class="container">
+            <div class="profile-container">
+                <!-- Боковая панель профиля -->
+                <aside class="profile-sidebar">
+                    <div class="sidebar-card profile-card">
+                        <div class="profile-header">
+                            <div class="profile-avatar">
+                                {% if user_avatar %}
+                                    <img src="{{ user_avatar }}" id="user-avatar">
+                                {% else %}
+                                    <div class="avatar-placeholder" id="avatar-placeholder">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                {% endif %}
+                                <button class="edit-avatar-btn" id="upload-btn">
+                                    <i class="fas fa-camera"></i>
+                                </button>
+                            </div>
+                            <h2 class="profile-name">{{ user_name }}</h2>
+
+
+                        </div>
+
+                        <div class="profile-info">
+                            <div class="info-item">
+                                <i class="fas fa-envelope"></i>
+                                <div class="info-content">
+                                    <span class="info-label">Email</span>
+                                    <span class="info-value">{{ user_email }}</span>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-phone"></i>
+                                <div class="info-content">
+                                    <span class="info-label">Телефон</span>
+                                    <span class="info-value">{{ user_phone if user_phone else 'Не указан' }}</span>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <div class="info-content">
+                                    <span class="info-label">Город</span>
+                                    <span class="info-value">{{ user_city if user_city else 'Не указан' }}</span>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-calendar-alt"></i>
+                                <div class="info-content">
+                                    <span class="info-label">На сайте с</span>
+                                    <span class="info-value">{{ registration_date }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="profile-stats">
+                            <div class="stat-item">
+                                <span class="stat-number-profile">{{ amount_in_saved }}</span>
+                                <span class="stat-label-profile">В избранном</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number-profile">0</span>
+                                <span class="stat-label-profile">Предстоит</span>
+                            </div>
+                        </div>
+                        <form method="POST" action="{{ url_for('profile_page') }}">
+                            <button class="btn-edit-profile" id="edit-profile-btn" name="edit_profile_button">
+                                <i class="fas fa-edit"></i>
+                                Редактировать профиль
+                            </button>
+                        </form>
+                    </div>
+                </aside>
+
+                <!-- Основное содержимое -->
+                <div class="profile-content">
+                    <!-- Предстоящие мероприятия -->
+                    <section class="profile-events-section" id="upcoming-events-section">
+                        <div class="section-header">
+                            <h2 class="section-title">Предстоящие мероприятия</h2>
+                            <span class="events-count">{{ count_events }} мероприятий</span>
+                        </div>
+
+                        <div class="events-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px;">
+                        {% for event in events %}
+                        <form action="{{url_for('main')}}" method="POST">
+                            <input type="hidden" name="event_card">
+                            <div class="event-card" data-category="{{event[2]}}">
+                                <div class="event-image">
+                                    <img src="{{ event[9] }}" alt="{{event[1]}}">
+                                    <span class="event-category">
+                                        {{ event[2] or 'Другое' }}
+                                    </span>
+                                </div>
+                                <div class="event-content">
+                                    <div class="event-date">
+                                        <i class="far fa-calendar"></i>
+                                        <span>{{event[4][:10]}}</span>
+                                        <span class="event-time">{{event[4][11::]}}</span>
+                                    </div>
+                                    <h3 class="event-title">{{event[1]}}</h3>
+                                    <div class="event-location">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <span>{{event[5]}}</span>
+                                    </div>
+                                    <p class="event-description">{{event[3]}}</p>
+                                    <div class="event-details">
+                                        <div class="detail">
+                                            <i class="fas fa-clock"></i>
+                                            <span>{{event[6]}}</span>
+                                        </div>
+                                        <div class="detail">
+                                            <i class="fas fa-users"></i>
+                                            <span>{{event[8]}}</span>
+                                        </div>
+                                        <div class="detail">
+                                            <i class="fas fa-wallet"></i>
+                                            <span>{{event[7]}} ₽</span>
+                                        </div>
+                                    </div>
+                                    <button class="btn-join" name="event_card_id" value="{{ event[0] }}">
+                                        <i class="fas fa-user-plus"></i>
+                                        <span>Присоединиться</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                        {%endfor%}
+                        </div>
+                    </section>
+
+                    <section class="profile-events-section" id="past-events-section">
+                        <div class="section-header">
+                            <h2 class="section-title">Избранное</h2>
+                            <span class="events-count">{{ amount_in_saved }} мероприятий</span>
+                        </div>
+
+                        {% if amount_in_saved == 0 %}
+                            <div class="events-grid" id="past-events-grid">
+                                <div class="empty-state">
+                                    <i class="fas fa-history"></i>
+                                    <h3>Нет избранных мероприятий</h3>
+                                    <p>Добавьте мероприятие в избранное, чтобы оно отобразилось здесь</p>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="events-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px;">
+                                {% for event in amount_in_saved_event %}
+                                <form action="{{url_for('main')}}" method="POST">
+                                    <input type="hidden" name="event_card">
+                                    <div class="event-card" data-category="{{ event[2] }}">  <!-- event, не amount_in_saved_event -->
+                                        <div class="event-image">
+                                            <img src="{{ event[9] }}" alt="{{ event[1] }}">  <!-- event, не amount_in_saved_event -->
+                                            <span class="event-category">
+                                                {{ event[2] or 'Другое' }}
+                                            </span>
+                                        </div>
+                                        <div class="event-content">
+                                            <div class="event-date">
+                                                <i class="far fa-calendar"></i>
+                                                <span>{{ event[4][:10] }}</span>  <!-- event, не amount_in_saved_event -->
+                                                <span class="event-time">{{ event[4][11::] }}</span>
+                                            </div>
+                                            <h3 class="event-title">{{ event[1] }}</h3>
+                                            <div class="event-location">
+                                                <i class="fas fa-map-marker-alt"></i>
+                                                <span>{{ event[5] }}</span>
+                                            </div>
+                                            <p class="event-description">{{ event[3] }}</p>
+                                            <div class="event-details">
+                                                <div class="detail">
+                                                    <i class="fas fa-clock"></i>
+                                                    <span>{{ event[6] }}</span>
+                                                </div>
+                                                <div class="detail">
+                                                    <i class="fas fa-users"></i>
+                                                    <span>{{ event[8] }}</span>
+                                                </div>
+                                                <div class="detail">
+                                                    <i class="fas fa-wallet"></i>
+                                                    <span>{{ event[7] }} ₽</span>
+                                                </div>
+                                            </div>
+                                            <button class="btn-join" name="event_card_id" value="{{ event[0] }}">
+                                                <i class="fas fa-user-plus"></i>
+                                                <span>Присоединиться</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                    </section>
+
+                    <!-- Статистика активности -->
+                    <section class="activity-section">
+                        <div class="section-header">
+                            <h2 class="section-title">Статистика активности</h2>
+                        </div>
+
+                        <div class="activity-stats">
+                            <div class="activity-stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-calendar-check"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <h4>Посещаемость</h4>
+                                    <div class="stat-value">0%</div>
+                                    <p class="stat-description">Процент посещенных мероприятий</p>
+                                </div>
+                            </div>
+
+                            <div class="activity-stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-comments"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <h4>Активность</h4>
+                                    <div class="stat-value">0</div>
+                                    <p class="stat-description">Баллы за активность на мероприятиях</p>
+                                </div>
+                            </div>
+
+                            <div class="activity-stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-award"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <h4>Достижения</h4>
+                                    <div class="stat-value">0</div>
+                                    <p class="stat-description">Полученные достижения</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Футер -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <div class="logo">Growth<span>Point</span></div>
+                    <p>Платформа для профессионального роста и развития через участие в мероприятиях.</p>
+                </div>
+                <div class="footer-links">
+                    <h3>Быстрые ссылки</h3>
+                    <ul>
+                        <li><a href="/main#about"><i class="fas fa-chevron-right"></i> О платформе</a></li>
+                        <li><a href="/main#events"><i class="fas fa-chevron-right"></i> Мероприятия</a></li>
+                        <li><a href="/main#communities"><i class="fas fa-chevron-right"></i> Сообщества</a></li>
+                        <li><a href="/main#blog"><i class="fas fa-chevron-right"></i> Блог</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h3>Контакты</h3>
+                    <ul>
+                        <li><i class="fas fa-envelope"></i> support@growthpoint.ru</li>
+                        <li><i class="fas fa-phone"></i> +7 (800) 123-45-67</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Москва, ул. Примерная, д. 1</li>
+                    </ul>
+                </div>
+                <div class="footer-newsletter">
+                    <h3>Новости</h3>
+                    <p>Подпишитесь на рассылку о новых мероприятиях</p>
+                    <div class="newsletter-form">
+                        <input type="email" class="newsletter-input" placeholder="Ваш email">
+                        <button class="btn-newsletter">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 GrowthPoint. Все права защищены.</p>
+                <div class="footer-bottom-links">
+                    <a href="/main#privacy">Политика конфиденциальности</a>
+                    <a href="/main#terms">Пользовательское соглашение</a>
+                    <a href="/main#rules">Правила использования</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="/static/profile.js"></script>
+</body>
+</html>

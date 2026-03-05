@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Growth Point - Активности и мероприятия</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{url_for('static', filename='main.css')}}">
+    <!-- Добавьте где-то в навигации или в основном контенте: -->
+<a href="/map" class="map-link">
+    <i class="fas fa-map-marked-alt"></i> Карта мероприятий
+</a>
+</head>
+<body>
+    <!-- Навигация -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <div class="logo">Growth<span>Point</span></div>
+            </div>
+            <div class="nav-links">
+                <a href="#events" class="nav-link active">Мероприятия</a>
+            </div>
+            <div class="nav-actions">
+                <a href="{{url_for('profile_page') if user_status else url_for('registration_page')}}" class="btn-login-nav">
+                    <i class="fas fa-user"></i> {%if user_status%} {{username}} {%else%} Sign up {%endif%}
+                </a>
+            </div>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Главный хедер с слоганом -->
+    <header class="main-header">
+        <div class="header-content">
+            <div class="header-badge">🎯 Твоя точка роста начинается здесь</div>
+
+            <h1 class="header-text">Открой мир возможностей вместе с <span class="highlight">GrowthPoint</span></h1>
+
+            <p>Платформа, которая соединяет людей через спорт, образование, путешествия и развитие. Найди своё сообщество и начни расти уже сегодня!</p>
+
+            <div class="header-cta">
+                <a href="#events" class="cta-button primary">
+                    <i class="fas fa-rocket"></i>
+                    <span>Начать сейчас</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="header-scroll">
+            <div class="mouse">
+                <div class="wheel"></div>
+            </div>
+            <span>Исследуй мероприятия</span>
+        </div>
+    </header>
+
+    <!-- Основной контент -->
+    <main class="main-content" id="events">
+        <div class="container">
+            <div class="section-header">
+                <h2>Предстоящие мероприятия</h2>
+                <p>Выбери активность по душе и присоединяйся к сообществу</p>
+            </div>
+
+            <!-- Фильтры -->
+            <div class="filters-section">
+                <div class="filters-container">
+                    <button class="scroll-btn scroll-left">‹</button>
+                    <div class="filters-wrapper">
+                        <button class="filter-btn active" data-filter="all">
+                            <span class="filter-icon">🌐</span>
+                            <span>Все</span>
+                        </button>
+                        <button class="filter-btn" data-filter="sport">
+                            <span class="filter-icon">⚽</span>
+                            <span>Спорт</span>
+                        </button>
+                        <button class="filter-btn" data-filter="education">
+                            <span class="filter-icon">📚</span>
+                            <span>Образование</span>
+                        </button>
+                        <button class="filter-btn" data-filter="travel">
+                            <span class="filter-icon">✈️</span>
+                            <span>Путешествия</span>
+                        </button>
+                        <button class="filter-btn" data-filter="culture">
+                            <span class="filter-icon">🎭</span>
+                            <span>Культура</span>
+                        </button>
+                        <button class="filter-btn" data-filter="business">
+                            <span class="filter-icon">💼</span>
+                            <span>Бизнес</span>
+                        </button>
+                    </div>
+                    <button class="scroll-btn scroll-right">›</button>
+                </div>
+
+                <!-- Поиск -->
+                <div class="search-section">
+                    <div class="search-box">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" class="search-input" placeholder="Поиск мероприятий...">
+                        <button class="search-btn">
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Сетка мероприятий -->
+            <div class="events-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px;">
+            {% for event in events %}
+            <form action="{{url_for('main')}}" method="POST">
+                <input type="hidden" name="event_card">
+                <div class="event-card" data-category="{{event[2]}}">
+                    <div class="event-image">
+                        <img src="{{ event[9] }}" alt="{{event[1]}}">
+                        <span class="event-category">
+                            {{ event[2] or 'Другое' }}
+                        </span>
+                    </div>
+                    <div class="event-content">
+                        <div class="event-date">
+                            <i class="far fa-calendar"></i>
+                            <span>{{event[4][:10]}}</span>
+                            <span class="event-time">{{event[4][11::]}}</span>
+                        </div>
+                        <h3 class="event-title">{{event[1]}}</h3>
+                        <div class="event-location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>{{event[5]}}</span>
+                        </div>
+                        <p class="event-description">{{event[3]}}</p>
+                        <div class="event-details">
+                            <div class="detail">
+                                <i class="fas fa-clock"></i>
+                                <span>{{event[6]}}</span>
+                            </div>
+                            <div class="detail">
+                                <i class="fas fa-users"></i>
+                                <span>{{event[8]}}</span>
+                            </div>
+                            <div class="detail">
+                                <i class="fas fa-wallet"></i>
+                                <span>{{event[7]}} ₽</span>
+                            </div>
+                        </div>
+<!--                        <div class="event-progress">-->
+<!--                            <div class="progress-bar">-->
+<!--                                <div class="progress-fill" style="width: 60%"></div>-->
+<!--                            </div>-->
+<!--                            <div class="progress-text"></div>-->
+<!--                        </div>-->
+                        <button class="btn-join" name="event_card_id" value="{{ event[0] }}">
+                            <i class="fas fa-user-plus"></i>
+                            <span>Присоединиться</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+            {%endfor%}
+            </div>
+
+            <!-- Кнопка "Показать еще" -->
+            <div class="load-more">
+                <button class="btn-load-more">
+                    <i class="fas fa-sync-alt"></i>
+                    <span>Показать еще мероприятия</span>
+                </button>
+            </div>
+        </div>
+        </div>
+    </main>
+
+    <!-- Футер -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <div class="logo">Growth<span>Point</span></div>
+                    <p>Выбирай активность и вперед к приключениям!</p>
+                    <div class="social-links">
+                        <a href="https://t.me/GrowthPointSupport_bot" class="telegram-link" target="_blank">
+                            <i class="fab fa-telegram-plane telegram-icon"></i>
+                            <span class="telegram-text">Наш Telegram</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h3>Быстрые ссылки</h3>
+                    <ul>
+                        <li><a href="#events"><i class="fas fa-calendar-alt"></i> Мероприятия</a></li>
+                        <li><a href="#"><i class="fas fa-users"></i> О нас</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h3>Контакты</h3>
+                    <ul>
+                        <li><i class="fas fa-envelope"></i> <a href="https://e.mail.ru/compose/?to=Point_information@mail.ru"
+                        target="_blank"
+                        style="
+                         color: white;
+                         text-decoration: none;
+                         font-family: Arial, sans-serif;
+                         font-size: 15px;
+                         font-weight: bold;
+                         letter-spacing: 2px;
+                         transition: all 0.4s ease;
+                         display: inline-block;
+                         position: relative;
+                       "
+                       onmouseover="
+                         this.style.transform = 'scale(1.001)';
+                         this.style.textShadow = '0 0 10px rgba(66, 133, 244, 0.8), 0 0 20px rgba(66, 133, 244, 0.6), 0 0 30px rgba(66, 133, 244, 0.4)';
+                         this.style.color = '#00BFFF';
+                         this.style.letterSpacing = '3px';
+                       "
+                       onmouseout="
+                         this.style.transform = 'scale(1)';
+                         this.style.textShadow = 'none';
+                         this.style.color = 'white';
+                         this.style.letterSpacing = '2px';
+                        ">Point_information@mail.ru</a>
+
+                        </li>
+                        <li><i class="fas fa-phone"></i> +7 989-528-58-22</li>
+                        <li><i class="fas fa-map-marker-alt"></i> г. Москва, ул. Тверская д. 13</li>
+                    </ul>
+                </div>
+                <div class="footer-newsletter">
+                    <h3>Будь в курсе</h3>
+                    <p>Подпишитесь на рассылку новостей о мероприятиях</p>
+                    <div class="newsletter-form">
+                        <input type="email" class="newsletter-input" placeholder="Ваш email">
+                        <button class="btn-newsletter">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Growth Point. Все права защищены.</p>
+                <div class="footer-bottom-links">
+                    <a href="#">Политика конфиденциальности</a>
+                    <a href="#">Условия использования</a>
+                    <a href="#">Карта сайта</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{url_for('static', filename='main-script.js')}}"></script>
+</body>
+</html>

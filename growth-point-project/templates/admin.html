@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Growth Point - Админ панель</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{url_for('static', filename='admin.css')}}">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Боковое меню -->
+        <aside class="admin-sidebar">
+            <div class="sidebar-header">
+                <div class="admin-logo">
+                    <div class="logo">Growth<span>Point</span></div>
+                    <div class="admin-subtitle">Админ панель</div>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="nav-item active" data-section="dashboard">
+                        <i class="fas fa-home"></i>
+                        <span>Главная</span>
+                    </li>
+                    <li class="nav-item" data-section="events">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Все мероприятия</span>
+                    </li>
+                    <li class="nav-item" data-section="add-event">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>Добавить</span>
+                    </li>
+                    <li class="nav-item" data-section="categories">
+                        <i class="fas fa-tags"></i>
+                        <span>Категории</span>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="admin-info">
+                    <div class="admin-avatar">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <div class="admin-details">
+                        <div class="admin-name">Администратор</div>
+                        <div class="admin-status active">
+                            <div class="status-dot"></div>
+                            <span>Online</span>
+                        </div>
+                    </div>
+                </div>
+                <a href="{{url_for('main')}}" class="btn-go-site">
+                    <i class="fas fa-external-link-alt"></i>
+                    <span>На сайт</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Основной контент -->
+        <main class="admin-content">
+            <!-- Заголовок -->
+            <header class="content-header">
+                <div class="header-left">
+                    <h1 id="section-title">Админ панель</h1>
+                    <p id="section-subtitle">Управление мероприятиями</p>
+                </div>
+                <div class="header-right">
+                    <div class="current-date">
+                        <i class="far fa-calendar"></i>
+                        <span id="current-date">Загрузка...</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Секция Главная -->
+            <section class="content-section active" id="dashboard-section">
+                <div class="welcome-card">
+                    <div class="welcome-content">
+                        <h2>👋 Добро пожаловать!</h2>
+                        <p>Управляйте мероприятиями на платформе Growth Point</p>
+                        <div class="quick-stats">
+                            <div class="stat-item">
+                                <div class="stat-number" id="total-events">{{total_events|default(0)}}</div>
+                                <div class="stat-label">Всего мероприятий</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number" id="active-events">{{total_events|default(0)}}</div>
+                                <div class="stat-label">Активных</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number" id="upcoming-events">0</div>
+                                <div class="stat-label">Предстоящих</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="welcome-illustration">
+                        <i class="fas fa-calendar-star"></i>
+                    </div>
+                </div>
+
+                <div class="quick-actions-grid">
+                    <button class="quick-action" data-action="add-event">
+                        <div class="action-icon">
+                            <i class="fas fa-plus"></i>
+                        </div>
+                        <h3>Добавить мероприятие</h3>
+                        <p>Создайте новое мероприятие</p>
+                    </button>
+
+                    <button class="quick-action" data-action="view-all">
+                        <div class="action-icon">
+                            <i class="fas fa-list"></i>
+                        </div>
+                        <h3>Все мероприятия</h3>
+                        <p>Просмотр и редактирование</p>
+                    </button>
+
+                    <button class="quick-action" data-action="manage-categories">
+                        <div class="action-icon">
+                            <i class="fas fa-tags"></i>
+                        </div>
+                        <h3>Категории</h3>
+                        <p>Управление категориями</p>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Секция всех мероприятий -->
+            <section class="content-section" id="events-section">
+                <div class="section-header">
+                    <h2>Все мероприятия</h2>
+                    <div class="header-actions">
+                        <div class="search-box">
+    <i class="fas fa-search"></i>
+    <label for="events-search"></label><input type="text" placeholder="Поиск мероприятий..." id="events-search">
+</div>
+                        <button class="btn-primary" id="add-new-event">
+                            <i class="fas fa-plus"></i>
+                            Добавить новое
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Сетка мероприятий -->
+            <div class="events-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px;">
+                {% for event in events %}
+                <div class="event-card" data-category="{{event[2]}}">
+                    <div class="event-image">
+                        <img src="{{ event[9] }}" alt="{{event[1]}}">
+                        <span class="event-category">
+                            {{ event[2] or 'Другое' }}
+                        </span>
+                    </div>
+                    <div class="event-content">
+                        <div class="event-date">
+                            <i class="far fa-calendar"></i>
+                            <span>{{event[4][:10]}}</span>
+                            <span class="event-time">{{event[4][11::]}}</span>
+                        </div>
+                        <h3 class="event-title">{{event[1]}}</h3>
+                        <div class="event-location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>{{event[5]}}</span>
+                        </div>
+                        <p class="event-description">{{event[3]}}</p>
+                        <div class="event-details">
+                            <div class="detail">
+                                <i class="fas fa-clock"></i>
+                                <span>{{event[6]}}</span>
+                            </div>
+                            <div class="detail">
+                                <i class="fas fa-users"></i>
+                                <span>{{event[8]}}</span>
+                            </div>
+                            <div class="detail">
+                                <i class="fas fa-wallet"></i>
+                                <span>{{event[7]}} ₽</span>
+                            </div>
+                        </div>
+
+                        <!-- Кнопка Редактировать -->
+                        <form method="POST" action="{{ url_for('admin_panel') }}" style="display: inline;">
+                            <input type="hidden" name="event_id" value="{{ event[0] }}">
+                            <input type="hidden" name="action" value="edit">
+                            <button type="submit" class="btn-edit">
+                                <i class="fas fa-edit"></i>
+                                <span>Редактировать</span>
+                            </button>
+                        </form>
+
+                        <!-- Кнопка Удалить -->
+                        <form method="POST" action="{{ url_for('admin_panel') }}"
+                              style="display: inline;">
+                            <input type="hidden" name="event_id" value="{{ event[0] }}">
+                            <input type="hidden" name="action" value="delete">
+                            <button type="submit" class="btn-del">
+                                <i class="fas fa-trash"></i>
+                                <span>Удалить</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            </section>
+
+            <!-- Секция добавления/редактирования мероприятия -->
+            <section class="content-section" id="add-event-section">
+                <div class="section-header">
+                    <h2 id="form-title">Добавить мероприятие</h2>
+                    <div class="header-actions">
+                        <button class="btn-secondary" id="preview-event">
+                            <i class="fas fa-eye"></i>
+                            Предпросмотр
+                        </button>
+                    </div>
+                </div>
+
+                <form id="event-form" class="event-form" action="{{url_for('admin_panel')}}" method="POST">
+                    <input name="admin_form" type="hidden" id="admin_form" value="">
+
+                    <div class="form-main">
+                        <!-- Основная информация -->
+                        <div class="form-section">
+                            <h3><i class="fas fa-info-circle"></i> Основная информация</h3>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="event-title">
+                                        <i class="fas fa-heading"></i>
+                                        Название мероприятия *
+                                    </label>
+                                    <input name="name" type="text" id="event-title" placeholder="Утренняя йога в парке" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="event-category">
+                                        <i class="fas fa-tag"></i>
+                                        Категория *
+                                    </label>
+                                    <select name="category" id="event-category" required>
+                                        <option value="">Выберите категорию</option>
+                                        <option value="sport">Спорт</option>
+                                        <option value="education">Образование</option>
+                                        <option value="travel">Путешествия</option>
+                                        <option value="culture">Культура</option>
+                                        <option value="business">Бизнес</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="event-date">
+                                        <i class="far fa-calendar"></i>
+                                        Дата и время *
+                                    </label>
+                                    <input name="datetime" type="datetime-local" id="event-date" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="event-duration">
+                                        <i class="fas fa-clock"></i>
+                                        Длительность *
+                                    </label>
+                                    <input name="duration" type="text" id="event-duration" placeholder="2 часа, 3 дня" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="event-location">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    Место проведения *
+                                </label>
+                                <input name="place" type="text" id="event-location" placeholder="Москва, Красная площадь" required>
+                            </div>
+                        </div>
+
+                        <!-- Изображение и цена -->
+                        <div class="form-group">
+                            <label for="event-image">
+                                <i class="fas fa-image"></i>
+                                Изображение (перетащите или нажмите для загрузки)
+                            </label>
+
+                            <!-- Заменяем группу input на drag-and-drop область -->
+                            <div class="image-input-group" id="image-drop-area">
+                                <div class="drop-content">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p>Перетащите изображение сюда</p>
+                                    <p class="drop-hint">Или нажмите для выбора файла</p>
+                                    <span class="file-types">JPG, PNG, GIF до 5MB</span>
+                                </div>
+                                <input type="file" name="image_file" id="event-image" accept="image/jpeg,image/png,image/gif,image/webp" style="display: none;">
+                                <input type="hidden" name="image_data" id="image-data">
+                                <!-- Убираем кнопку предпросмотра -->
+                            </div>
+
+                            <!-- Оставляем область предпросмотра без изменений -->
+                            <div class="image-preview" id="image-preview">
+                                <div class="preview-placeholder">
+                                    <i class="fas fa-image"></i>
+                                    <span>Здесь будет предпросмотр изображения</span>
+                                </div>
+                            </div>
+                        </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="event-price">
+                                        <i class="fas fa-wallet"></i>
+                                        Стоимость (₽)
+                                    </label>
+                                    <input name="cost" type="number" id="event-price" placeholder="0 для бесплатных" min="0" value="0">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="event-capacity">
+                                        <i class="fas fa-users"></i>
+                                        Количество мест *
+                                    </label>
+                                    <input name="amount" type="number" id="event-capacity" placeholder="50" min="1" required>
+                                </div>
+                            </div>
+                        </div>
+
+                    <!-- Описание -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-align-left"></i> Описание</h3>
+                        <div class="form-group">
+                            <label for="event-description">
+                                Подробное описание мероприятия *
+                            </label>
+                            <textarea name="describe" id="event-description" rows="6" placeholder="Опишите ваше мероприятие подробно..." required></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Статус и действия -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-cog"></i> Дополнительные настройки</h3>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="event-status">
+                                    <i class="fas fa-toggle-on"></i>
+                                    Статус
+                                </label>
+                                <select name="status" id="event-status">
+                                    <option value="active">Активно</option>
+                                    <option value="upcoming">Предстоящее</option>
+                                    <option value="draft">Черновик</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="event-featured">
+                                    <i class="fas fa-star"></i>
+                                    Особое мероприятие
+                                </label>
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="event-featured">
+                                    <label for="event-featured" class="checkbox-label">
+                                        <div class="checkbox-custom"></div>
+                                        <span>Показать на главной</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" id="save-draft">
+                            <i class="fas fa-save"></i>
+                            Сохранить черновик
+                        </button>
+                        <button type="submit" class="btn-primary" id="publish-event">
+                            <i class="fas fa-paper-plane"></i>
+                            Опубликовать мероприятие
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Секция управления категориями -->
+            <section class="content-section" id="categories-section">
+                <div class="section-header">
+                    <h2>Управление категориями</h2>
+                    <button class="btn-primary" id="create-category">
+                        <i class="fas fa-plus"></i>
+                        Новая категория
+                    </button>
+                </div>
+
+                <div class="categories-list">
+                    <!-- Категории будут загружены через JS -->
+                </div>
+            </section>
+        </main>
+
+        <!-- Модальное окно предпросмотра -->
+        <div class="modal-overlay" id="preview-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Предпросмотр мероприятия</h3>
+                    <button class="modal-close">&times;</button>
+                </div>
+                <div class="modal-body" id="preview-content">
+                    <!-- Предпросмотр будет вставлен сюда -->
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-secondary" id="close-preview">Закрыть</button>
+                    <button class="btn-primary" id="edit-from-preview">
+                        <i class="fas fa-edit"></i>
+                        Редактировать
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{url_for('static', filename='admin.js')}}"></script>
+</body>
+</html>
