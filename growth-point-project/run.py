@@ -9,7 +9,7 @@ from datetime import datetime
 from datetime import date
 from werkzeug.utils import secure_filename
 
-db = sqlite3.connect('db/_user.db', check_same_thread=False)
+db = sqlite3.connect('/data/_user.db', check_same_thread=False)
 
 cur = db.cursor()
 
