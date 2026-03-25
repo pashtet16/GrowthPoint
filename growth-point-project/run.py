@@ -48,7 +48,8 @@ cur.execute(
         duration TEXT NOT NULL,
         cost INTEGER NOT NULL,
         amount INTEGER NOT NULL,
-        url TEXT NOT NULL
+        url TEXT NOT NULL,
+        organizers_id INTEGER NOT NULL
     )
     '''
 )

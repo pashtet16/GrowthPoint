@@ -149,6 +149,7 @@
             <div class="events-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px;">
                 {% for event in events %}
                 <div class="event-card" data-category="{{event[2]}}">
+                    <h4>    Организатор: {{ event[10] or "ID NOT FOUNDED" }}</h4>
                     <div class="event-image">
                         <img src="{{ event[9] }}" alt="{{event[1]}}">
                         <span class="event-category">
