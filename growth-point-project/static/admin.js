@@ -998,3 +998,72 @@ document.addEventListener('DOMContentLoaded', function() {
     `;
     document.head.appendChild(style);
 });
+
+ // Базовая инициализация для вкладки организаторов
+        document.addEventListener('DOMContentLoaded', function() {
+            // Обработчик для кнопки добавления организатора
+            const addOrganizerBtn = document.getElementById('add-organizer-btn');
+            const organizerModal = document.getElementById('organizer-modal');
+            const closeOrganizerModal = document.getElementById('close-organizer-modal');
+            const cancelOrganizerBtn = document.getElementById('cancel-organizer-btn');
+            
+            if (addOrganizerBtn) {
+                addOrganizerBtn.addEventListener('click', function() {
+                    organizerModal.classList.add('active');
+                });
+            }
+            
+            function closeModal() {
+                organizerModal.classList.remove('active');
+                document.getElementById('organizer-form').reset();
+                document.getElementById('organizer-logo-preview').style.display = 'none';
+                document.getElementById('organizer-logo-area').style.display = 'block';
+                document.getElementById('organizer-logo-data').value = '';
+            }
+            
+            if (closeOrganizerModal) closeOrganizerModal.addEventListener('click', closeModal);
+            if (cancelOrganizerBtn) cancelOrganizerBtn.addEventListener('click', closeModal);
+            
+            // Закрытие по клику вне модального окна
+            organizerModal.addEventListener('click', function(e) {
+                if (e.target === organizerModal) closeModal();
+            });
+            
+            // Загрузка логотипа организатора
+            const organizerLogoArea = document.getElementById('organizer-logo-area');
+            const organizerLogoInput = document.getElementById('organizer-logo');
+            const organizerLogoPreview = document.getElementById('organizer-logo-preview');
+            const logoPreviewImg = document.getElementById('logo-preview-img');
+            const removeLogoBtn = document.getElementById('remove-logo');
+            
+            if (organizerLogoArea) {
+                organizerLogoArea.addEventListener('click', function() {
+                    organizerLogoInput.click();
+                });
+            }
+            
+            if (organizerLogoInput) {
+                organizerLogoInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file && file.type.startsWith('image/')) {
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            logoPreviewImg.src = event.target.result;
+                            organizerLogoPreview.style.display = 'block';
+                            organizerLogoArea.style.display = 'none';
+                            document.getElementById('organizer-logo-data').value = event.target.result;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+            
+            if (removeLogoBtn) {
+                removeLogoBtn.addEventListener('click', function() {
+                    organizerLogoPreview.style.display = 'none';
+                    organizerLogoArea.style.display = 'block';
+                    document.getElementById('organizer-logo-data').value = '';
+                    organizerLogoInput.value = '';
+                });
+            }
+        });

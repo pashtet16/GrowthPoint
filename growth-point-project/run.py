@@ -49,10 +49,27 @@ cur.execute(
         cost INTEGER NOT NULL,
         amount INTEGER NOT NULL,
         url TEXT NOT NULL,
-        organizers_id INTEGER NOT NULL
-    )
+        organizer_id INTEGER NOT NULL
+                         DEFAULT (111)
+        )
     '''
 )
+
+db.commit()
+
+cur.execute(
+    '''
+        CREATE TABLE IF NOT EXISTS organizers(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            organizer_id INTEGER NOT NULL DEFAULT (111),
+            name TEXT NOT NULL,
+            describe TEXT,
+            contacts TEXT NOT NULL
+        )
+    '''
+)
+
+db.commit()
 
 app = Flask(__name__)
 app.secret_key = "qwerty"
@@ -97,7 +114,6 @@ def admin_panel():
     if request.method == "POST":
         # Обработка формы добавления нового события
         if 'admin_form' in request.form:
-            print("admin_form")
             name = request.form['name']
             category = request.form['category']
             describe = request.form['describe']
@@ -106,18 +122,28 @@ def admin_panel():
             duration = request.form['duration']
             cost = request.form['cost']
             amount = request.form['amount']
+            organizer_id = request.form['organizer_id']
 
             image_filename = request.form.get('image_data', '')
 
             if image_filename:
                 url = f'/static/img/{image_filename}'
-                print("!!!")
             else:
                 url = request.form.get('url', '')
 
             cur.execute(
-                'INSERT INTO admin_panel(name, category, describe, date, place, duration, cost, amount, url) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)',
-                (name, category, describe, date_time, place, duration, cost, amount, url))
+                'INSERT INTO admin_panel(name, category, describe, date, place, duration, cost, amount, url, organizer_id) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                (name, category, describe, date_time, place, duration, cost, amount, url, organizer_id))
+            db.commit()
+
+        if 'organizer_form' in request.form:
+            org_id = random.randint(10, 1_230_405_912)
+            org_name = request.form['organizer_name']
+            org_describe = request.form['organizer_description']
+            org_contact = request.form['organizer_contact']
+
+            cur.execute('INSERT INTO organizers(organizer_id, name, describe, contacts) VALUES(?, ?, ?, ?)',
+                        (org_id, org_name, org_describe, org_contact))
             db.commit()
 
         action = request.form.get('action')
@@ -140,9 +166,13 @@ def admin_panel():
     cur.execute('SELECT COUNT(*) FROM admin_panel')
     total_events = cur.fetchone()[0]
 
+    cur.execute('SELECT * FROM organizers')
+    orgs = cur.fetchall()
+
     return render_template('admin.html',
                            events=events,
-                           total_events=total_events)
+                           total_events=total_events,
+                           orgs=orgs)
 
 
 @app.route('/login', methods=['POST', 'GET'], endpoint='login_page')
@@ -337,10 +367,8 @@ def profile_page():
 
     cur.execute('SELECT * FROM admin_panel')
     events = cur.fetchall()
-    upcoming_events = cur.fetchall()
 
     count_events = len(events)
-    count_upcoming_events = len(upcoming_events)
 
     db.commit()
 
@@ -377,7 +405,6 @@ def profile_page():
         user_email=user_info[4],
         events=events,
         count_events=count_events,
-        count_upcoming_events=count_upcoming_events,
         registration_date=user_info[10],
         user_avatar=user_info[9],
         amount_in_saved=amount_in_saved,
