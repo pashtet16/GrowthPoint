@@ -9,7 +9,9 @@ from datetime import datetime
 from datetime import date
 from werkzeug.utils import secure_filename
 
-db = sqlite3.connect('db/_user.db', check_same_thread=False)
+base_path = os.path.dirname(os.path.abspath(__file__))
+db_path = os.path.join(base_path, 'db', '_user.db')
+db = sqlite3.connect(db_path, check_same_thread=False)
 
 cur = db.cursor()
 
@@ -173,10 +175,12 @@ def auth():
             rows = cur.fetchall()
             for row in rows:
                 if email == row[4]:
-                    flash("Пользователь с данным email уже существует!", category='errorEmail')
+                    flash("Пользователь с данным email уже существует!",
+                          category='errorEmail')
                     return redirect(url_for('registration_page'))
                 elif login == row[1]:
-                    flash("Данное имя пользователя занято!", category='errorLogin')
+                    flash("Данное имя пользователя занято!",
+                          category='errorLogin')
                     return redirect(url_for('registration_page'))
 
             cur.execute(
@@ -263,7 +267,8 @@ def eventCard(event_id):
 
     event_random_similar_all = list(cur.fetchall())
 
-    event_random_similar = tuple(random.sample(event_random_similar_all, min(3, len(event_random_similar_all))))
+    event_random_similar = tuple(random.sample(
+        event_random_similar_all, min(3, len(event_random_similar_all))))
     db.commit()
 
     if request.method == "POST" and "event_card_id_similar" in request.form:
@@ -311,7 +316,8 @@ def eventCard(event_id):
                            event_similar_3=event_random_similar[2],
 
                            user_status=True if session.get('id') else False,
-                           username=session['login'] if session.get('id') else None,
+                           username=session['login'] if session.get(
+                               'id') else None,
                            saved=True if is_event_saved() else False
                            )
 
@@ -335,7 +341,8 @@ def profile_page():
 
     db.commit()
 
-    cur.execute('SELECT saved_events_id FROM users WHERE id = ?', (session.get('id'),))
+    cur.execute('SELECT saved_events_id FROM users WHERE id = ?',
+                (session.get('id'),))
     result = cur.fetchone()
     db.commit()
     amount_in_saved = 0
@@ -351,7 +358,8 @@ def profile_page():
         amount_in_saved = len(id_list)
 
         for event_id_str in id_list:
-            cur.execute('SELECT * FROM admin_panel WHERE id = ?', (int(event_id_str),))
+            cur.execute('SELECT * FROM admin_panel WHERE id = ?',
+                        (int(event_id_str),))
             event = cur.fetchone()
             if event:
                 saved_events_list.append(event)
@@ -392,8 +400,6 @@ def edit_profile():
                     (new_username, new_email, new_phone, new_city, session.get('id'),))
 
         return redirect(url_for('profile_page'))
-
-
 
     return render_template(
         'edit_profile.html',
