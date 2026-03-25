@@ -113,7 +113,7 @@
                                 <span class="stat-label-profile">В избранном</span>
                             </div>
                             <div class="stat-item">
-                                <span class="stat-number-profile">0</span>
+                                <span class="stat-number-profile">{{ count_upcoming_events }}</span>
                                 <span class="stat-label-profile">Предстоит</span>
                             </div>
                         </div>
@@ -132,11 +132,11 @@
                     <section class="profile-events-section" id="upcoming-events-section">
                         <div class="section-header">
                             <h2 class="section-title">Предстоящие мероприятия</h2>
-                            <span class="events-count">{{ count_events }} мероприятий</span>
+                            <span class="events-count">{{ count_upcing_events }} мероприятий</span>
                         </div>
 
                         <div class="events-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px;">
-                        {% for event in events %}
+                        {% for event in upcoming_events %}
                         <form action="{{url_for('main')}}" method="POST">
                             <input type="hidden" name="event_card">
                             <div class="event-card" data-category="{{event[2]}}">
