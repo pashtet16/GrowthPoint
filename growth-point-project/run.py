@@ -336,9 +336,10 @@ def profile_page():
 
     cur.execute('SELECT * FROM admin_panel')
     events = cur.fetchall()
+    upcoming_events = cur.fetchall()
 
     count_events = len(events)
-    # count_upcoming_events = len(upcoming_events)
+    count_upcoming_events = len(upcoming_events)
 
     db.commit()
 
@@ -375,7 +376,7 @@ def profile_page():
         user_email=user_info[4],
         events=events,
         count_events=count_events,
-        # count_upcoming_events=count_upcoming_events,
+        count_upcoming_events=count_upcoming_events,
         registration_date=user_info[10],
         user_avatar=user_info[9],
         amount_in_saved=amount_in_saved,
