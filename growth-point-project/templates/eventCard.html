@@ -182,10 +182,15 @@
 
                         <form method="POST" action="">
     <input type="hidden" name="register_event">
-    <button type="submit" class="btn-register">
-        <i class="fas fa-user-plus"></i>
-        Присоединиться к мероприятию
-    </button>
+        <button type="submit" class="btn-register">
+            {% if not added %}
+                <i class="fas fa-user-plus"></i>
+                Присоединиться к мероприятию
+            {% else %}
+                <i class="fas fa-user-check"></i>
+                Вы участвуете
+            {% endif %}
+        </button>
 </form>
 
                         <form action="" method="POST">
@@ -204,10 +209,6 @@
                     <div class="sidebar-card">
                         <h4 style="font-size: 1.2rem; color: var(--secondary); margin-bottom: 15px; font-weight: 600;">Поделиться</h4>
                         <div class="share-buttons">
-                            <button class="share-btn telegram">
-                                <i class="fab fa-telegram-plane"></i>
-                                Telegram
-                            </button>
                             <button class="share-btn link" onclick="copyLink()">
                                 <i class="fas fa-link"></i>
                                 Ссылка
@@ -388,31 +389,37 @@
                         </a>
                     </div>
                 </div>
-                <div class="footer-links">
-                    <h3>Быстрые ссылки</h3>
-                    <ul>
-                        <li><a href="#"><i class="fas fa-calendar-alt"></i> Мероприятия</a></li>
-                        <li><a href="#"><i class="fas fa-users"></i> О нас</a></li>
-                        <li><a href="#"><i class="fas fa-question-circle"></i> FAQ</a></li>
-                    </ul>
-                </div>
                 <div class="footer-contact">
                     <h3>Контакты</h3>
                     <ul>
-                        <li><i class="fas fa-envelope"></i> Point_information@mail.ru</li>
+                        <li><i class="fas fa-envelope"></i> <a href="https://e.mail.ru/compose/?to=Point_information@mail.ru"
+                        target="_blank"
+                        style="
+                         color: white;
+                         text-decoration: none;
+                         font-family: Arial, sans-serif;
+                         font-size: 15px;
+                         font-weight: bold;
+                         letter-spacing: 2px;
+                         transition: all 0.4s ease;
+                         display: inline-block;
+                         position: relative;
+                       "
+                       onmouseover="
+                         this.style.transform = 'scale(1.001)';
+                         this.style.textShadow = '0 0 10px rgba(66, 133, 244, 0.8), 0 0 20px rgba(66, 133, 244, 0.6), 0 0 30px rgba(66, 133, 244, 0.4)';
+                         this.style.color = '#00BFFF';
+                         this.style.letterSpacing = '3px';
+                       "
+                       onmouseout="
+                         this.style.transform = 'scale(1)';
+                         this.style.textShadow = 'none';
+                         this.style.color = 'white';
+                         this.style.letterSpacing = '2px';
+                        ">Point_information@mail.ru</a> </li>
                         <li><i class="fas fa-phone"></i> +7 989-528-58-22</li>
                         <li><i class="fas fa-map-marker-alt"></i> г. Москва, ул. Тверская д. 13</li>
                     </ul>
-                </div>
-                <div class="footer-newsletter">
-                    <h3>Будь в курсе</h3>
-                    <p>Подпишитесь на рассылку новостей о мероприятиях</p>
-                    <div class="newsletter-form">
-                        <input type="email" class="newsletter-input" placeholder="Ваш email">
-                        <button class="btn-newsletter">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </div>
                 </div>
             </div>
 

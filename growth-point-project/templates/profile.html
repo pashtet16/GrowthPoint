@@ -135,7 +135,7 @@
         <span class="events-count">{{ upcoming_events|length }} записей</span>
     </div>
 
-    <div class="events-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px;">
+    <div class="events-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px;">
     {% for event in upcoming_events %}
     <div class="event-card">
         <div class="event-image">
@@ -192,7 +192,7 @@
                                 </div>
                             </div>
                         {% else %}
-                            <div class="events-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px;">
+                            <div class="events-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 60px;">
                                 {% for event in amount_in_saved_event %}
                                 <form action="{{url_for('main')}}" method="POST">
                                     <input type="hidden" name="event_card">
@@ -296,36 +296,41 @@
                     <div class="logo">Growth<span>Point</span></div>
                     <p>Платформа для профессионального роста и развития через участие в мероприятиях.</p>
                 </div>
-                <div class="footer-links">
-                    <h3>Быстрые ссылки</h3>
-                    <ul>
-                        <li><a href="/main#about"><i class="fas fa-chevron-right"></i> О платформе</a></li>
-                        <li><a href="/main#events"><i class="fas fa-chevron-right"></i> Мероприятия</a></li>
-                        <li><a href="/main#communities"><i class="fas fa-chevron-right"></i> Сообщества</a></li>
-                        <li><a href="/main#blog"><i class="fas fa-chevron-right"></i> Блог</a></li>
-                    </ul>
-                </div>
                 <div class="footer-contact">
                     <h3>Контакты</h3>
                     <ul>
-                        <li><i class="fas fa-envelope"></i> support@growthpoint.ru</li>
-                        <li><i class="fas fa-phone"></i> +7 (800) 123-45-67</li>
+                        <li><i class="fas fa-envelope"></i> <a href="https://e.mail.ru/compose/?to=Point_information@mail.ru"
+                        target="_blank"
+                        style="
+                         color: white;
+                         text-decoration: none;
+                         font-family: Arial, sans-serif;
+                         font-size: 15px;
+                         font-weight: bold;
+                         letter-spacing: 2px;
+                         transition: all 0.4s ease;
+                         display: inline-block;
+                         position: relative;
+                       "
+                       onmouseover="
+                         this.style.transform = 'scale(1.001)';
+                         this.style.textShadow = '0 0 10px rgba(66, 133, 244, 0.8), 0 0 20px rgba(66, 133, 244, 0.6), 0 0 30px rgba(66, 133, 244, 0.4)';
+                         this.style.color = '#00BFFF';
+                         this.style.letterSpacing = '3px';
+                       "
+                       onmouseout="
+                         this.style.transform = 'scale(1)';
+                         this.style.textShadow = 'none';
+                         this.style.color = 'white';
+                         this.style.letterSpacing = '2px';
+                        ">Point_information@mail.ru</a></li>
+                        <li><i class="fas fa-phone"></i> +7 (989) 528-58-22</li>
                         <li><i class="fas fa-map-marker-alt"></i> Москва, ул. Примерная, д. 1</li>
                     </ul>
                 </div>
-                <div class="footer-newsletter">
-                    <h3>Новости</h3>
-                    <p>Подпишитесь на рассылку о новых мероприятиях</p>
-                    <div class="newsletter-form">
-                        <input type="email" class="newsletter-input" placeholder="Ваш email">
-                        <button class="btn-newsletter">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </div>
-                </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2023 GrowthPoint. Все права защищены.</p>
+                <p>&copy; 2025 GrowthPoint. Все права защищены.</p>
                 <div class="footer-bottom-links">
                     <a href="/main#privacy">Политика конфиденциальности</a>
                     <a href="/main#terms">Пользовательское соглашение</a>

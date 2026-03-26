@@ -96,7 +96,6 @@ def generate_filename(original_filename):
 def main():
     cur.execute("SELECT * FROM admin_panel")
     events = cur.fetchall()
-
     if request.method == 'POST' and 'event_card' in request.form:
         event_id = request.form.get('event_card_id')
         return redirect(url_for('eventCard', event_id=event_id))
@@ -318,7 +317,8 @@ def eventCard(event_id):
             return redirect(url_for('eventCard', event_id=event_id))
 
         # Получаем текущие записи пользователя
-        cur.execute('SELECT upcoming_events_id FROM users WHERE id = ?', (user_id,))
+        cur.execute(
+            'SELECT upcoming_events_id FROM users WHERE id = ?', (user_id,))
         result = cur.fetchone()
         current_events = result[0] if result and result[0] else ""
 
@@ -336,10 +336,12 @@ def eventCard(event_id):
             new_events = str(event_id)
 
         # Обновляем записи пользователя
-        cur.execute('UPDATE users SET upcoming_events_id = ? WHERE id = ?', (new_events, user_id))
+        cur.execute(
+            'UPDATE users SET upcoming_events_id = ? WHERE id = ?', (new_events, user_id))
 
         # Уменьшаем количество мест
-        cur.execute('UPDATE admin_panel SET amount = amount - 1 WHERE id = ?', (event_id,))
+        cur.execute(
+            'UPDATE admin_panel SET amount = amount - 1 WHERE id = ?', (event_id,))
         db.commit()
 
         flash('Вы успешно записаны на мероприятие!', 'success')
@@ -380,6 +382,14 @@ def eventCard(event_id):
 
         return False
 
+    def is_event_added():
+        cur.execute('SELECT upcoming_events_id FROM users WHERE id = ?',
+                    (session.get('id'),))
+        event = cur.fetchone()
+        if event and event[0]:
+            save_list = str(event[0]).split(',')
+            return str(event_id) in save_list
+
     cur.execute('SELECT organizers_id FROM admin_panel WHERE id = ?',
                 (event_id,))
     org_id = cur.fetchone()
@@ -405,7 +415,8 @@ def eventCard(event_id):
                            user_status=True if session.get('id') else False,
                            username=session['login'] if session.get(
                                'id') else None,
-                           saved=True if is_event_saved() else False
+                           saved=True if is_event_saved() else False,
+                           added=True if is_event_added() else False
                            )
 
 
@@ -429,10 +440,12 @@ def cancel_registration(event_id):
             new_events = ','.join(event_list) if event_list else ""
 
             # Обновляем записи
-            cur.execute('UPDATE users SET upcoming_events_id = ? WHERE id = ?', (new_events, user_id))
+            cur.execute(
+                'UPDATE users SET upcoming_events_id = ? WHERE id = ?', (new_events, user_id))
 
             # Возвращаем место
-            cur.execute('UPDATE admin_panel SET amount = amount + 1 WHERE id = ?', (event_id,))
+            cur.execute(
+                'UPDATE admin_panel SET amount = amount + 1 WHERE id = ?', (event_id,))
             db.commit()
 
             flash('Вы отменили запись на мероприятие', 'success')
@@ -488,7 +501,8 @@ def profile_page():
         db.commit()
 
     # Получаем мероприятия, на которые пользователь записан
-    cur.execute('SELECT upcoming_events_id FROM users WHERE id = ?', (session.get('id'),))
+    cur.execute('SELECT upcoming_events_id FROM users WHERE id = ?',
+                (session.get('id'),))
     result = cur.fetchone()
     upcoming_ids = result[0] if result and result[0] else ""
 
@@ -502,7 +516,8 @@ def profile_page():
         for event_id_str in id_list:
             if event_id_str.strip():
                 try:
-                    cur.execute('SELECT * FROM admin_panel WHERE id = ?', (int(event_id_str.strip()),))
+                    cur.execute('SELECT * FROM admin_panel WHERE id = ?',
+                                (int(event_id_str.strip()),))
                     event = cur.fetchone()
                     if event:
                         upcoming_events.append(event)
