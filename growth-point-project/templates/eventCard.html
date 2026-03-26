@@ -175,15 +175,18 @@
 
                         <div class="event-stats">
                             <div class="stat-item">
-                                <span class="stat-number">{{event_amount}}</span>
+                                <span class="stat-number">{{event_amount}}/{{total_amount}}</span>
                                 <span class="stat-label">Количество мест</span>
                             </div>
                         </div>
 
-                        <button class="btn-register">
-                            <i class="fas fa-user-plus"></i>
-                            Присоединиться к мероприятию
-                        </button>
+                        <form method="POST" action="">
+    <input type="hidden" name="register_event">
+    <button type="submit" class="btn-register">
+        <i class="fas fa-user-plus"></i>
+        Присоединиться к мероприятию
+    </button>
+</form>
 
                         <form action="" method="POST">
                             <button class="btn-secondary" name="saved_event_button">

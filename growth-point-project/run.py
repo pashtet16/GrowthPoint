@@ -23,13 +23,12 @@ cur.execute(
         password TEXT NOT NULL,
         date_of_birth TEXT NOT NULL,
         email TEXT NOT NULL UNIQUE,
-        registration_date TEXT
+        registration_date TEXT,
         phone_number VARCHAR(15),
         city TEXT,
-        upcoming_events_id INTEGER
+        upcoming_events_id TEXT
         saved_events_id TEXT,
-        user_avatar TEXT
-        
+        user_avatar TEXT    
     )
     '''
 )
@@ -49,8 +48,7 @@ cur.execute(
         cost INTEGER NOT NULL,
         amount INTEGER NOT NULL,
         url TEXT NOT NULL,
-        organizers_id INTEGER NOT NULL
-                         DEFAULT (111)
+        organizers_id INTEGER NOT NULL DEFAULT (111)
         )
     '''
 )
@@ -70,6 +68,7 @@ cur.execute(
 )
 
 db.commit()
+
 
 app = Flask(__name__)
 app.secret_key = "qwerty"
@@ -132,9 +131,8 @@ def admin_panel():
                 url = request.form.get('url', '')
 
             cur.execute(
-                'INSERT INTO admin_panel(name, category, describe, date, place, duration, cost, amount, url, organizers_id) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-                (name, category, describe, date_time, place, duration, cost, amount, url, organizer_id))
-            db.commit()
+                'INSERT INTO admin_panel(name, category, describe, date, place, duration, cost, amount, url, organizers_id, total_amount) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                (name, category, describe, date_time, place, duration, cost, amount, url, organizer_id, amount))
 
         if 'organizer_form' in request.form:
             org_id = random.randint(10, 1_230_405_912)
@@ -290,6 +288,11 @@ def eventCard(event_id):
     cur.execute('SELECT * FROM admin_panel WHERE id=?',
                 (event_id,))
     event_info = cur.fetchone()
+    if len(event_info) > 11:  # если есть поле total_amount
+        total_amount = event_info[11]
+    else:
+        total_amount = event_info[8]  # если нет, используем amount
+    remaining_amount = event_info[8]
 
     db.commit()
 
@@ -301,6 +304,46 @@ def eventCard(event_id):
     event_random_similar = tuple(random.sample(
         event_random_similar_all, min(3, len(event_random_similar_all))))
     db.commit()
+
+    if request.method == "POST" and "register_event" in request.form:
+        user_id = session.get('id')
+
+        if not user_id:
+            flash('Сначала зарегистрируйтесь', 'error')
+            return redirect(url_for('login_page'))
+
+        # Проверка свободных мест
+        if event_info[8] <= 0:
+            flash('Все места заняты', 'error')
+            return redirect(url_for('eventCard', event_id=event_id))
+
+        # Получаем текущие записи пользователя
+        cur.execute('SELECT upcoming_events_id FROM users WHERE id = ?', (user_id,))
+        result = cur.fetchone()
+        current_events = result[0] if result and result[0] else ""
+
+        # Проверка, не записан ли уже
+        if current_events:
+            event_list = str(current_events).split(',')
+            if str(event_id) in event_list:
+                flash('Вы уже записаны на это мероприятие', 'warning')
+                return redirect(url_for('eventCard', event_id=event_id))
+
+        # Добавляем ID мероприятия в строку
+        if current_events:
+            new_events = f"{current_events},{event_id}"
+        else:
+            new_events = str(event_id)
+
+        # Обновляем записи пользователя
+        cur.execute('UPDATE users SET upcoming_events_id = ? WHERE id = ?', (new_events, user_id))
+
+        # Уменьшаем количество мест
+        cur.execute('UPDATE admin_panel SET amount = amount - 1 WHERE id = ?', (event_id,))
+        db.commit()
+
+        flash('Вы успешно записаны на мероприятие!', 'success')
+        return redirect(url_for('eventCard', event_id=event_id))
 
     if request.method == "POST" and "event_card_id_similar" in request.form:
         event_id = request.form.get('event_card_id_similar')
@@ -349,7 +392,7 @@ def eventCard(event_id):
     return render_template('eventCard.html',
                            event_name=event_info[1], event_category=event_info[2], event_describe=event_info[3],
                            event_date=event_info[4], event_place=event_info[5], event_duration=event_info[6],
-                           event_cost=event_info[7], event_amount=event_info[8], event_img=event_info[9],
+                           event_cost=event_info[7], event_amount=event_info[8], event_img=event_info[9], total_amount=event_info[11],
 
                            organizer_name=org_info[2],
                            organizer_desc=org_info[3],
@@ -364,6 +407,41 @@ def eventCard(event_id):
                                'id') else None,
                            saved=True if is_event_saved() else False
                            )
+
+
+@app.route('/cancel-registration/<int:event_id>', methods=['POST'])
+def cancel_registration(event_id):
+    user_id = session.get('id')
+
+    if not user_id:
+        flash('Сначала войдите в систему', 'error')
+        return redirect(url_for('login_page'))
+
+    # Получаем текущие записи
+    cur.execute('SELECT upcoming_events_id FROM users WHERE id = ?', (user_id,))
+    result = cur.fetchone()
+    current_events = result[0] if result and result[0] else ""
+
+    if current_events:
+        event_list = str(current_events).split(',')
+        if str(event_id) in event_list:
+            event_list.remove(str(event_id))
+            new_events = ','.join(event_list) if event_list else ""
+
+            # Обновляем записи
+            cur.execute('UPDATE users SET upcoming_events_id = ? WHERE id = ?', (new_events, user_id))
+
+            # Возвращаем место
+            cur.execute('UPDATE admin_panel SET amount = amount + 1 WHERE id = ?', (event_id,))
+            db.commit()
+
+            flash('Вы отменили запись на мероприятие', 'success')
+        else:
+            flash('Запись не найдена', 'error')
+    else:
+        flash('У вас нет записей', 'error')
+
+    return redirect(url_for('profile_page'))
 
 
 @app.route('/profile', methods=['POST', 'GET'])
@@ -409,11 +487,34 @@ def profile_page():
                 saved_events_list.append(event)
         db.commit()
 
+    # Получаем мероприятия, на которые пользователь записан
+    cur.execute('SELECT upcoming_events_id FROM users WHERE id = ?', (session.get('id'),))
+    result = cur.fetchone()
+    upcoming_ids = result[0] if result and result[0] else ""
+
+    # Проверка типа данных
+    if isinstance(upcoming_ids, int):
+        upcoming_ids = str(upcoming_ids)
+
+    upcoming_events = []
+    if upcoming_ids and upcoming_ids.strip():
+        id_list = str(upcoming_ids).split(',')
+        for event_id_str in id_list:
+            if event_id_str.strip():
+                try:
+                    cur.execute('SELECT * FROM admin_panel WHERE id = ?', (int(event_id_str.strip()),))
+                    event = cur.fetchone()
+                    if event:
+                        upcoming_events.append(event)
+                except ValueError:
+                    pass
+
     if request.method == "POST" and 'edit_profile_button' in request.form:
         return redirect(url_for('edit_profile'))
 
     return render_template(
         'profile.html',
+        upcoming_events=upcoming_events,
         user_name=user_info[1],
         user_email=user_info[4],
         events=events,

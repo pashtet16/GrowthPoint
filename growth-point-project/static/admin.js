@@ -85,6 +85,8 @@ function switchSection(section) {
         case 'categories':
             loadCategories();
             break;
+        case 'organizers':
+            break;
     }
 }
 
@@ -94,6 +96,7 @@ function updateSectionTitle(section) {
         'dashboard': 'Админ панель',
         'events': 'Все мероприятия',
         'add-event': 'Добавить мероприятие',
+        'organizers': 'Управление организаторами',
         'categories': 'Управление категориями'
     };
 
@@ -101,6 +104,7 @@ function updateSectionTitle(section) {
         'dashboard': 'Управление мероприятиями',
         'events': 'Просмотр и редактирование',
         'add-event': 'Создание нового мероприятия',
+        'organizers': 'Добавление и редактирование',
         'categories': 'Настройка категорий'
     };
 
@@ -122,6 +126,9 @@ function handleQuickAction(action) {
             break;
         case 'preview':
             window.open('/admin/preview', '_blank');
+            break;
+        case 'manage-organizers':
+            switchSection('organizers');
             break;
     }
 }
