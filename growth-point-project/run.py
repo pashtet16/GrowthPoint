@@ -49,7 +49,7 @@ cur.execute(
         cost INTEGER NOT NULL,
         amount INTEGER NOT NULL,
         url TEXT NOT NULL,
-        organizer_id INTEGER NOT NULL
+        organizers_id INTEGER NOT NULL
                          DEFAULT (111)
         )
     '''
@@ -132,7 +132,7 @@ def admin_panel():
                 url = request.form.get('url', '')
 
             cur.execute(
-                'INSERT INTO admin_panel(name, category, describe, date, place, duration, cost, amount, url, organizer_id) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                'INSERT INTO admin_panel(name, category, describe, date, place, duration, cost, amount, url, organizers_id) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                 (name, category, describe, date_time, place, duration, cost, amount, url, organizer_id))
             db.commit()
 
@@ -337,10 +337,23 @@ def eventCard(event_id):
 
         return False
 
+    cur.execute('SELECT organizers_id FROM admin_panel WHERE id = ?',
+                (event_id,))
+    org_id = cur.fetchone()
+
+    cur.execute('SELECT * FROM organizers WHERE organizer_id = ?',
+                (org_id[0],))
+    org_info = cur.fetchone()
+    print(org_info)
+
     return render_template('eventCard.html',
                            event_name=event_info[1], event_category=event_info[2], event_describe=event_info[3],
                            event_date=event_info[4], event_place=event_info[5], event_duration=event_info[6],
                            event_cost=event_info[7], event_amount=event_info[8], event_img=event_info[9],
+
+                           organizer_name=org_info[2],
+                           organizer_desc=org_info[3],
+                           organizer_contact=org_info[4],
 
                            event_similar_1=event_random_similar[0],
                            event_similar_2=event_random_similar[1],

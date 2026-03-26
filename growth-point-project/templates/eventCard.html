@@ -155,24 +155,11 @@
 
                         <div class="event-organizer">
                             <div class="organizer-header">
-                                <div class="organizer-avatar">
-                                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" alt="Алексей Горный">
-                                </div>
                                 <div class="organizer-info">
-                                    <h4>Алексей Горный</h4>
-                                    <p>Организатор, сертифицированный горный гид с 10-летним опытом</p>
-                                    <p>Провел более 200 успешных походов</p>
+                                    <h2 style="font-size: 1.2rem; color: var(--secondary); margin-bottom: 15px; font-weight: 600;">Организатор</h2>
+                                    <h4>{{ organizer_name or "111"}}</h4>
+                                    <p>{{ organizer_desc or "111" }}</p>
                                 </div>
-                            </div>
-                            <div class="organizer-contact">
-                                <a href="#" class="organizer-contact-btn">
-                                    <i class="fab fa-telegram"></i>
-                                    Написать в Telegram
-                                </a>
-                                <a href="#" class="organizer-contact-btn">
-                                    <i class="fas fa-phone"></i>
-                                    Позвонить
-                                </a>
                             </div>
                         </div>
                     </div>
@@ -228,9 +215,7 @@
                     <div class="sidebar-card">
                         <h4 style="font-size: 1.2rem; color: var(--secondary); margin-bottom: 15px; font-weight: 600;">Контакты организатора</h4>
                         <div style="color: #666; line-height: 1.6;">
-                            <p style="margin-bottom: 10px;"><i class="fas fa-phone" style="color: var(--primary); margin-right: 10px;"></i> +7 999 123-45-67</p>
-                            <p style="margin-bottom: 10px;"><i class="fas fa-envelope" style="color: var(--primary); margin-right: 10px;"></i> alex@mountainguide.ru</p>
-                            <p><i class="fas fa-globe" style="color: var(--primary); margin-right: 10px;"></i> mountainguide.ru</p>
+                            <p style="margin-bottom: 10px;"><i class="fas fa-envelope" style="color: var(--primary); margin-right: 10px;"></i> {{ organizer_contact or "111" }}</p>
                         </div>
                     </div>
                 </div>
